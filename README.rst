@@ -2,7 +2,7 @@
 USPS API
 ========
 
-|python| |license|
+|python| |coverage| |license|
 
 -------------------
 
@@ -105,6 +105,10 @@ MIT. See `LICENSE`_ for more details.
     :target: https://github.com/Brobin/django-seed/blob/master/LICENSE
     :alt: MIT License
 
+.. |coverage| image:: https://coveralls.io/repos/github/Brobin/usps-api/badge.svg?branch=master
+    :target: https://coveralls.io/github/Brobin/usps-api?branch=master
+    :alt: Code Coverage
+
 .. |python| image:: https://img.shields.io/pypi/pyversions/usps-api.svg?style=flat-square
     :target: https://pypi.python.org/pypi/usps-api
-    :alt: Python 3.4, 3.5, 3.6
+    :alt: Python 2.7, 3.4, 3.5, 3.6
