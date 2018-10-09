@@ -34,7 +34,7 @@ Usage
 Track Shipments
 ---------------
 
-..code-block:: python
+.. code-block:: python
 
     from usps import USPSApi
 
@@ -48,25 +48,25 @@ Create Shipment
 
 The `create_shipment` function needs a to and crom address, weight (in ounces), service type and label type. Service types and lable types can be found in `usps/constants.py`. Defaults are `SERVICE_PRIORITY` and `LABEL_ZPL`.
 
-..code-block:: python
-```python
+.. code-block:: python
+
     from usps import USPSApi, Address
     from usps import SERVICE_PRIORITY, LABEL_ZPL
 
     to_address = Address(
         name='Tobin Brown',
-        address_1='10394 Redick Ave.',
-        city='Omaha',
+        address_1='1234 Test Ave.',
+        city='Test',
         state='NE',
-        zipcode='68508'
+        zipcode='55555'
     )
 
     from_address = Address(
         name='Tobin Brown',
-        address_1='10394 Redick Ave.',
-        city='Omaha',
+        address_1='1234 Test Ave.',
+        city='Test',
         state='NE',
-        zipcode='68508'
+        zipcode='55555'
     )
     weight = 12  # weight in ounces
 
@@ -77,16 +77,16 @@ The `create_shipment` function needs a to and crom address, weight (in ounces), 
 Validate Address
 ----------------
 
-..code-block:: python
+.. code-block:: python
 
     from usps import USPSApi, Address
 
     address = Address(
         name='Tobin Brown',
-        address_1='10394 Redick Ave.',
-        city='Omaha',
+        address_1='1234 Test Ave.',
+        city='Test',
         state='NE',
-        zipcode='68508'
+        zipcode='55555'
     )
     usps = USPSApi('XXXXXXXXXXXX', test=True)
     validation = usps.validate_address(address)
