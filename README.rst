@@ -105,6 +105,6 @@ MIT. See `LICENSE`_ for more details.
     :target: https://github.com/Brobin/django-seed/blob/master/LICENSE
     :alt: MIT License
 
-.. |python| image:: https://img.shields.io/pypi/pyversions/django-seed.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/django-seed
-    :alt: Python 2.7, 3.x
+.. |python| image:: https://img.shields.io/pypi/pyversions/usps-api.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/usps-api
+    :alt: Python 3.4, 3.5, 3.6

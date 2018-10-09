@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='usps-api',
-    version='0.1,
+    version='0.1',
     author='Tobin Brown',
     author_email='tobin@brobin.me',
     packages=['usps'],
@@ -18,9 +18,6 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Information Technology',
         'License :: OSI Approved :: MIT License',
-        'Framework :: Django',
-        'Framework :: Django :: 1.11',
-        'Framework :: Django :: 2.0',
         'Natural Language :: English',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
