@@ -5,3 +5,4 @@ testing.py
 usps_api.egg-info
 build
 dist
+.coverage

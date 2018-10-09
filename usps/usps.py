@@ -12,21 +12,25 @@ class USPSApiError(Exception):
 
 
 class USPSApi(object):
+    BASE_URL = 'https://secure.shippingapis.com/ShippingAPI.dll?API='
     urls = {
-        'tracking': 'https://secure.shippingapis.com/ShippingAPI.dll?API=TrackV2{test}&XML={xml}',
-        'label': 'https://secure.shippingapis.com/ShippingAPI.dll?API=eVS{test}&XML={xml}',
-        'validate': 'https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&XML={xml}',
+        'tracking': 'TrackV2{test}&XML={xml}',
+        'label': 'eVS{test}&XML={xml}',
+        'validate': 'Verify&XML={xml}',
     }
 
     def __init__(self,  api_user_id, test=False):
         self.api_user_id = api_user_id
         self.test = test
 
-    def send_request(self, action, xml):
-        xml = etree.tostring(xml, pretty_print=self.test).decode()
-        url = self.urls[action].format(
+    def get_url(self, action, xml):
+        return self.BASE_URL + self.urls[action].format(
             **{'test': 'Certify' if self.test else '', 'xml': xml}
         )
+
+    def send_request(self, action, xml):
+        xml = etree.tostring(xml, pretty_print=self.test).decode()
+        url = self.get_url(action, xml)
         xml_response = requests.get(url).content
         response = json.loads(json.dumps(xmltodict.parse(xml_response)))
         if 'Error' in response:

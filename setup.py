@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='usps-api',
-    version='0.1',
+    version='0.2',
     author='Tobin Brown',
     author_email='tobin@brobin.me',
     packages=['usps'],
@@ -31,5 +31,6 @@ setup(
     keywords='usps shipping',
     long_description=open('README.rst', 'r').read(),
     install_requires=['requests', 'lxml', 'xmltodict'],
+    tests_require=['coverage', 'mock'],
     zip_safe=False,
 )
