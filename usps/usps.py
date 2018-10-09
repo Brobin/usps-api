@@ -15,7 +15,7 @@ class USPSApi(object):
     urls = {
         'tracking': 'https://secure.shippingapis.com/ShippingAPI.dll?API=TrackV2{test}&XML={xml}',
         'label': 'https://secure.shippingapis.com/ShippingAPI.dll?API=eVS{test}&XML={xml}',
-        'validate': 'https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&XML={xml}'
+        'validate': 'https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&XML={xml}',
     }
 
     def __init__(self,  api_user_id, test=False):
@@ -34,7 +34,7 @@ class USPSApi(object):
         return response
 
     def validate_address(self, *args, **kwargs):
-        return ValidateAddress(self, *args, **kwargs)
+        return AddressValidate(self, *args, **kwargs)
 
     def track(self, *args, **kwargs):
         return TrackingInfo(self, *args, **kwargs)
