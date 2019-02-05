@@ -20,9 +20,6 @@ class Address(object):
             name = etree.SubElement(root, prefix + 'Name')
             name.text = self.name
 
-            phone = etree.SubElement(root, prefix + 'Phone')
-            phone.text = self.phone
-
         company = etree.SubElement(root, prefix + 'Firm' + ('Name' if validate else ''))
         company.text = self.company
     
@@ -30,7 +27,7 @@ class Address(object):
         address_1.text = self.address_1
 
         address_2 = etree.SubElement(root, prefix + 'Address2')
-        address_2.text = self.address_2
+        address_2.text = self.address_2 or '-'
     
         city = etree.SubElement(root, prefix + 'City')
         city.text = self.city
@@ -43,3 +40,7 @@ class Address(object):
 
         zipcode_ext = etree.SubElement(root, prefix + 'Zip4')
         zipcode_ext.text = self.zipcode_ext
+
+        if not validate:
+            phone = etree.SubElement(root, prefix + 'Phone')
+            phone.text = self.phone

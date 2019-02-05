@@ -43,7 +43,7 @@ class USPSApi(object):
     def track(self, *args, **kwargs):
         return TrackingInfo(self, *args, **kwargs)
 
-    def create_shipment(self, *args, **kwargs):
+    def create_label(self, *args, **kwargs):
         return ShippingLabel(self, *args, **kwargs)
 
 
@@ -77,13 +77,43 @@ class ShippingLabel(object):
         label = etree.SubElement(label_params, 'ImageParameter')
         label.text = label_type
 
-        from_address.add_to_xml(xml, prefix='From')
-        to_address.add_to_xml(xml, prefix='To')
+        from_address.add_to_xml(xml, prefix='From', validate=False)
+        to_address.add_to_xml(xml, prefix='To', validate=False)
 
         package_weight = etree.SubElement(xml, 'WeightInOunces')
         package_weight.text = str(weight)
 
         delivery_service = etree.SubElement(xml, 'ServiceType')
         delivery_service.text = service
+
+        etree.SubElement(xml, 'Width')
+        etree.SubElement(xml, 'Length')
+        etree.SubElement(xml, 'Height')
+        etree.SubElement(xml, 'Machinable')
+        etree.SubElement(xml, 'ProcessingCategory')
+        etree.SubElement(xml, 'PriceOptions')
+        etree.SubElement(xml, 'InsuredAmount')
+        etree.SubElement(xml, 'AddressServiceRequested')
+        etree.SubElement(xml, 'ExpressMailOptions')
+        etree.SubElement(xml, 'ShipDate')
+        etree.SubElement(xml, 'CustomerRefNo')
+        etree.SubElement(xml, 'ExtraServices')
+        etree.SubElement(xml, 'HoldForPickup')
+        etree.SubElement(xml, 'OpenDistribute')
+        etree.SubElement(xml, 'PermitNumber')
+        etree.SubElement(xml, 'PermitZIPCode')
+        etree.SubElement(xml, 'PermitHolderName')
+        etree.SubElement(xml, 'CRID')
+        etree.SubElement(xml, 'MID')
+        etree.SubElement(xml, 'LogisticsManagerMID')
+        etree.SubElement(xml, 'VendorCode')
+        etree.SubElement(xml, 'VendorProductVersionNumber')
+        etree.SubElement(xml, 'SenderName')
+        etree.SubElement(xml, 'SenderEMail')
+        etree.SubElement(xml, 'RecipientName')
+        etree.SubElement(xml, 'RecipientEMail')
+        etree.SubElement(xml, 'ReceiptOption')
+        image = etree.SubElement(xml, 'ImageType')
+        image.text = 'PDF'
 
         self.result = usps.send_request('label', xml)
