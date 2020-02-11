@@ -29,7 +29,9 @@ class USPSApi(object):
         )
 
     def send_request(self, action, xml):
-        xml = etree.tostring(xml, pretty_print=self.test).decode()
+        # The USPS developer guide says "ISO-8859-1 encoding is the expected character set for the request."
+        # (see https://www.usps.com/business/web-tools-apis/general-api-developer-guide.htm)
+        xml = etree.tostring(xml, encoding='iso-8859-1', pretty_print=self.test).decode()
         url = self.get_url(action, xml)
         xml_response = requests.get(url).content
         response = json.loads(json.dumps(xmltodict.parse(xml_response)))
