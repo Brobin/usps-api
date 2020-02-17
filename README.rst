@@ -46,7 +46,7 @@ Track Shipments
 Create Shipment
 ---------------
 
-The `create_shipment` function needs a to and crom address, weight (in ounces), service type and label type. Service types and lable types can be found in `usps/constants.py`. Defaults are `SERVICE_PRIORITY` and `LABEL_ZPL`.
+The `create_shipment` function needs a to and from address, weight (in ounces), service type and label type. Service types and lable types can be found in `usps/constants.py`. Defaults are `SERVICE_PRIORITY` and `LABEL_ZPL`.
 
 .. code-block:: python
 
