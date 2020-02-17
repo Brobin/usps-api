@@ -111,4 +111,4 @@ MIT. See `LICENSE`_ for more details.
 
 .. |python| image:: https://img.shields.io/pypi/pyversions/usps-api.svg?style=flat-square
     :target: https://pypi.python.org/pypi/usps-api
-    :alt: Python 2.7, 3.4, 3.5, 3.6
+    :alt: Python 3.5, 3.6, 3.7, 3.8
