@@ -62,7 +62,7 @@ class USPSApiTestCase(TestCase):
 
         self.usps.validate_address()
         self.usps.track()
-        self.usps.create_shipment()
+        self.usps.create_label()
 
         address_mock.assert_called()
         track_mock.assert_called()
