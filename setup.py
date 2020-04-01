@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='usps-api',
-    version='0.4',
+    version='0.4.1',
     author='Tobin Brown',
     author_email='tobin@brobin.me',
     packages=['usps'],
