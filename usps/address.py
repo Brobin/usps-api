@@ -3,7 +3,7 @@ from lxml import etree
 
 class Address(object):
 
-    def __init__(self, name, address_1, city, state, zipcode,
+    def __init__(self, name, address_1, city, state, zipcode='',
                  zipcode_ext='', company='', address_2='', phone=''):
         self.name = name
         self.company = company
@@ -35,11 +35,13 @@ class Address(object):
         state = etree.SubElement(root, prefix + 'State')
         state.text = self.state
 
-        zipcode = etree.SubElement(root, prefix + 'Zip5')
-        zipcode.text = self.zipcode
+        if self.zipcode:
+            zipcode = etree.SubElement(root, prefix + 'Zip5')
+            zipcode.text = self.zipcode
 
-        zipcode_ext = etree.SubElement(root, prefix + 'Zip4')
-        zipcode_ext.text = self.zipcode_ext
+        if self.zipcode_ext:
+            zipcode_ext = etree.SubElement(root, prefix + 'Zip4')
+            zipcode_ext.text = self.zipcode_ext
 
         if not validate:
             phone = etree.SubElement(root, prefix + 'Phone')

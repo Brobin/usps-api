@@ -17,9 +17,11 @@ class USPSApi(object):
         'tracking': 'TrackV2{test}&XML={xml}',
         'label': 'eVS{test}&XML={xml}',
         'validate': 'Verify&XML={xml}',
+        'citystate': 'CityStateLookup&XML={xml}',
+        'zipcode': 'ZipCodeLookup&XML={xml}'
     }
 
-    def __init__(self,  api_user_id, test=False):
+    def __init__(self, api_user_id, test=False):
         self.api_user_id = api_user_id
         self.test = test
 
@@ -48,10 +50,16 @@ class USPSApi(object):
     def create_label(self, *args, **kwargs):
         return ShippingLabel(self, *args, **kwargs)
 
+    def lookup_city_by_zip(self, *args, **kwargs):
+        return CityStateLookup(self, *args, **kwargs)
+
+    def lookup_zip_by_address(self, *args, **kwargs):
+        return ZipCodeLookup(self, *args, **kwargs)
+
 
 class AddressValidate(object):
 
-    def __init__(self, usps, address):
+    def __init__(self, usps, address, just_answer: bool = False):
         xml = etree.Element('AddressValidateRequest', {'USERID': usps.api_user_id})
         _address = etree.SubElement(xml, 'Address', {'ID': '0'})
         address.add_to_xml(_address, prefix='', validate=True)
@@ -66,6 +74,49 @@ class TrackingInfo(object):
         child = etree.SubElement(xml, 'TrackID', {'ID': tracking_number})
 
         self.result = usps.send_request('tracking', xml)
+
+
+class CityStateLookup(object):
+
+    def __init__(self, usps, zip_code, just_answer: bool = False):
+        xml = etree.Element('CityStateLookupRequest', {'USERID': usps.api_user_id})
+        _zip_code = etree.SubElement(xml, 'ZipCode', {'ID': '0'})
+        zip_code_inner = etree.SubElement(_zip_code, 'Zip5')
+        zip_code_inner.text = zip_code
+
+        self.result = usps.send_request('citystate', xml)
+        if just_answer:
+            try:
+                if self.result.get('CityStateLookupResponse').get('ZipCode').get('Error'):
+                    self.result = 'Invalid Zip Code.'
+                else:
+                    self.result = {
+                        'City': self.result.get('CityStateLookupResponse').get('ZipCode').get('City'),
+                        'State': self.result.get('CityStateLookupResponse').get('ZipCode').get('State')
+                    }
+            except:
+                self.result = None
+
+
+class ZipCodeLookup(object):
+
+    def __init__(self, usps, address, just_answer: bool = False):
+        xml = etree.Element('ZipCodeLookupRequest', {'USERID': usps.api_user_id})
+        _address = etree.SubElement(xml, 'Address', {'ID': '1'})
+        address.add_to_xml(_address, prefix='', validate=True)
+
+        self.result = usps.send_request('zipcode', xml)
+        if just_answer:
+            try:
+                if self.result.get('ZipCodeLookupResponse').get('Address').get('Error'):
+                    self.result = 'Invalid Address.'
+                else:
+                    self.result = {
+                        'Zip5': self.result.get('ZipCodeLookupResponse').get('Address').get('Zip5'),
+                        'Zip4': self.result.get('ZipCodeLookupResponse').get('Address').get('Zip4')
+                    }
+            except:
+                self.result = None
 
 
 class ShippingLabel(object):
