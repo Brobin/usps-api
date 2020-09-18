@@ -127,3 +127,43 @@ class ShippingLabel(object):
         image.text = 'PDF'
 
         self.result = usps.send_request('label', xml)
+        
+  
+class Zip(object):
+    """ 
+        Extends USPS application to include a Zip code class and a Time to deliver class
+        Time to deliver calculates estimated delivery time between two zip codes.
+
+        Can be extended to switch between Standard and Priority, but Standard is hard-coded right now
+    """
+
+	def __init__(self, zipcode,
+				 zipcode_ext=''):
+
+		self.zipcode = zipcode
+		self.zipcode_ext = zipcode_ext
+
+	def add_to_xml(self, root, prefix='To', validate=False):
+
+		zipcode = etree.SubElement(root, prefix + 'Zip5')
+		zipcode.text = self.zipcode
+
+		zipcode_ext = etree.SubElement(root, prefix + 'Zip4')
+		zipcode_ext.text = self.zipcode_ext
+
+
+class TimeCalc(object):
+
+	def __init__(self, origin, destination):
+		#StandardBRequest
+		xml = etree.Element('StandardBRequest', {'USERID': usps.api_user_id})
+		#xml = etree.Element('PriorityMailRequest', {'USERID': usps.api_user_id})
+		_origin = etree.SubElement(xml, 'OriginZip')
+		_origin.text = str(origin)
+		
+		_destination = etree.SubElement(xml, 'DestinationZip')
+		_destination.text = str(destination)
+		
+		print(etree.tostring(xml, pretty_print=True))
+		
+		self.result = usps.send_request('calc', xml)
