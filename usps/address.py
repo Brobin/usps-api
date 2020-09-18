@@ -44,3 +44,20 @@ class Address(object):
         if not validate:
             phone = etree.SubElement(root, prefix + 'Phone')
             phone.text = self.phone
+
+class Zip(object):
+    """ Adding zip code class for requests that don't have a full address """    
+
+	def __init__(self, zipcode,
+				 zipcode_ext=''):
+
+		self.zipcode = zipcode
+		self.zipcode_ext = zipcode_ext
+
+	def add_to_xml(self, root, prefix='To', validate=False):
+
+		zipcode = etree.SubElement(root, prefix + 'Zip5')
+		zipcode.text = self.zipcode
+
+		zipcode_ext = etree.SubElement(root, prefix + 'Zip4')
+		zipcode_ext.text = self.zipcode_ext            
