@@ -17,6 +17,7 @@ class USPSApi(object):
         'tracking': 'TrackV2{test}&XML={xml}',
         'label': 'eVS{test}&XML={xml}',
         'validate': 'Verify&XML={xml}',
+        'citystatelookup': 'CityStateLookup&XML={xml}'
     }
 
     def __init__(self, api_user_id, test=False):
@@ -42,6 +43,9 @@ class USPSApi(object):
     def validate_address(self, *args, **kwargs):
         return AddressValidate(self, *args, **kwargs)
 
+    def lookup_citystate(self, *args, **kwargs):
+        return CityStateLookup(self, *args, **kwargs)
+
     def track(self, *args, **kwargs):
         return TrackingInfo(self, *args, **kwargs)
 
@@ -57,6 +61,16 @@ class AddressValidate(object):
         address.add_to_xml(_address, prefix='', validate=True)
 
         self.result = usps.send_request('validate', xml)
+
+
+class CityStateLookup(object):
+
+    def __init__(self, usps, zip):
+        xml = etree.Element('CityStateLookupRequest', {'USERID': usps.api_user_id})
+        _zip = etree.SubElement(xml, 'ZipCode', {'ID': '0'})
+        zip.add_to_xml(_zip, prefix='', validate=False)
+
+        self.result = usps.send_request('citystatelookup', xml)
 
 
 class TrackingInfo(object):
