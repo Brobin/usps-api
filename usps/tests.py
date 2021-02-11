@@ -5,7 +5,7 @@ from lxml import etree
 from unittest import TestCase
 
 from .address import Address
-from .usps import USPSApi, USPSApiError
+from .usps import USPSApi, USPSApiError, TimeCalc
 
 
 class USPSApiTestCase(TestCase):
@@ -83,7 +83,27 @@ class AddressTestCase(TestCase):
         for child in root:
             self.assertTrue(child.tag in elements)
 
+            
+class TimeCalcTestCase(TestCase):
+    
+    usps = USPSApi("XXXXXX", test=True)
 
+    #usps.urls['calc'] = 'PriorityMail&XML={xml}'
+
+    usps.urls['calc'] = 'StandardB&XML={xml}'
+
+
+    def time_calc(self, *args, **kwargs):
+	    return TimeCalc(self, *args, **kwargs)
+
+    usps.time_calc = time_calc
+
+
+    # Test function
+    label = usps.time_calc('20002', '99550')
+    print(label.result)
+    
+    
 class AddressValidateTestCase(TestCase):
     pass
 
