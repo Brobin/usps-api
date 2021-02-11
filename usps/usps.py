@@ -4,7 +4,8 @@ import xmltodict
 
 from lxml import etree
 
-from .constants import LABEL_ZPL, SERVICE_PRIORITY
+from .address import Zip
+from .constants import LABEL_ZPL, SERVICE_PRIORITY, MAX_LOOKUPS_IN_REQUEST
 
 
 class USPSApiError(Exception):
@@ -65,10 +66,22 @@ class AddressValidate(object):
 
 class CityStateLookup(object):
 
-    def __init__(self, usps, zip):
+    def __init__(self, usps, zips):
+        """
+        Accepts either a single Zip or a sequence of them, up to the API maximum of 5.
+        """
         xml = etree.Element('CityStateLookupRequest', {'USERID': usps.api_user_id})
-        _zip = etree.SubElement(xml, 'ZipCode', {'ID': '0'})
-        zip.add_to_xml(_zip, prefix='', validate=False)
+
+        if isinstance(zips, Zip):
+            zips = [zips]
+
+        if len(zips) > MAX_LOOKUPS_IN_REQUEST:
+            raise ValueError('each request limited to {:d} ZIPs ({:d} provided)'.format(MAX_LOOKUPS_IN_REQUEST,
+                                                                                        len(zips)))
+
+        for ii, zz in enumerate(zips):
+            _zip = etree.SubElement(xml, 'ZipCode', {'ID': '{:d}'.format(ii)})
+            zz.add_to_xml(_zip, prefix='', validate=False)
 
         self.result = usps.send_request('citystatelookup', xml)
 
