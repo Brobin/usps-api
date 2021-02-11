@@ -19,7 +19,7 @@ class USPSApi(object):
         'validate': 'Verify&XML={xml}',
     }
 
-    def __init__(self,  api_user_id, test=False):
+    def __init__(self, api_user_id, test=False):
         self.api_user_id = api_user_id
         self.test = test
 
@@ -61,18 +61,18 @@ class AddressValidate(object):
 
 class TrackingInfo(object):
 
-    def __init__(self, usps, tracking_number,**kwargs): 
+    def __init__(self, usps, tracking_number, **kwargs):
         xml = etree.Element('TrackFieldRequest', {'USERID': usps.api_user_id})
         if 'source_id' in kwargs:
             self.source_id = kwargs['source_id']
             self.client_ip = kwargs['client_ip'] if 'client_ip' in kwargs else '127.0.0.1'
-            
+
             etree.SubElement(xml, "Revision").text = "1"
             etree.SubElement(xml, "ClientIp").text = self.client_ip
             etree.SubElement(xml, "SourceId").text = self.source_id
 
         child = etree.SubElement(xml, 'TrackID', {'ID': tracking_number})
-        
+
         self.result = usps.send_request('tracking', xml)
 
 
@@ -127,26 +127,26 @@ class ShippingLabel(object):
         image.text = 'PDF'
 
         self.result = usps.send_request('label', xml)
-        
-  
+
+
 class TimeCalc(object):
-	""" 
+    """
         Extends USPS application to include a Time to deliver class
         Time to deliver calculates estimated delivery time between two zip codes.
 
         Can be extended to switch between Standard and Priority, but Standard is hard-coded right now
-	"""
+    """
 
-	def __init__(self, origin, destination):
-		#StandardBRequest
-		xml = etree.Element('StandardBRequest', {'USERID': usps.api_user_id})
-		#xml = etree.Element('PriorityMailRequest', {'USERID': usps.api_user_id})
-		_origin = etree.SubElement(xml, 'OriginZip')
-		_origin.text = str(origin)
-		
-		_destination = etree.SubElement(xml, 'DestinationZip')
-		_destination.text = str(destination)
-		
-		print(etree.tostring(xml, pretty_print=True))
-		
-		self.result = usps.send_request('calc', xml)
+    def __init__(self, origin, destination):
+        # StandardBRequest
+        xml = etree.Element('StandardBRequest', {'USERID': usps.api_user_id})
+        # xml = etree.Element('PriorityMailRequest', {'USERID': usps.api_user_id})
+        _origin = etree.SubElement(xml, 'OriginZip')
+        _origin.text = str(origin)
+
+        _destination = etree.SubElement(xml, 'DestinationZip')
+        _destination.text = str(destination)
+
+        print(etree.tostring(xml, pretty_print=True))
+
+        self.result = usps.send_request('calc', xml)
