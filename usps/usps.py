@@ -30,16 +30,26 @@ class USPSApi(object):
             **{'test': 'Certify' if self.test else '', 'xml': xml}
         )
 
-    def send_request(self, action, xml):
+    def send_request(self, action, xml, return_type=('dict', 'json', 'ordered_dict')[0]):
         # The USPS developer guide says "ISO-8859-1 encoding is the expected character set for the request."
         # (see https://www.usps.com/business/web-tools-apis/general-api-developer-guide.htm)
         xml = etree.tostring(xml, encoding='iso-8859-1', pretty_print=self.test).decode()
         url = self.get_url(action, xml)
-        xml_response = requests.get(url).content
-        response = json.loads(json.dumps(xmltodict.parse(xml_response)))
-        if 'Error' in response:
-            raise USPSApiError(response['Error']['Description'])
-        return response
+        response_xml = requests.get(url).content
+        response_ordered_dict = xmltodict.parse(response_xml)
+        if 'Error' in response_ordered_dict:
+            raise USPSApiError(response_ordered_dict['Error']['Description'])
+        # NB: seems the json library is being used solely to turn the OrderedDicts into dicts...
+        if return_type == 'ordered_dict':
+            return response_ordered_dict
+        response_json = json.dumps(response_ordered_dict)
+        if return_type == 'json':
+            return response_json
+        response_dict = json.loads(response_json)
+        if return_type != 'dict':
+            raise ValueError('unknown return_type: {}'.format(return_type))
+
+        return response_dict
 
     def validate_address(self, *args, **kwargs):
         return AddressValidate(self, *args, **kwargs)
@@ -66,7 +76,7 @@ class AddressValidate(object):
 
 class CityStateLookup(object):
 
-    def __init__(self, usps, zips):
+    def __init__(self, usps, zips, return_type=('dict', 'json', 'pandas', 'ordered_dict')[0]):
         """
         Accepts either a single Zip or a sequence of them, up to the API maximum of 5.
         """
@@ -83,7 +93,23 @@ class CityStateLookup(object):
             _zip = etree.SubElement(xml, 'ZipCode', {'ID': '{:d}'.format(ii)})
             zz.add_to_xml(_zip, prefix='', validate=False)
 
-        self.result = usps.send_request('citystatelookup', xml)
+        _res = usps.send_request('citystatelookup', xml, 'ordered_dict' if return_type == 'pandas' else return_type)
+        if return_type == 'pandas':
+            import pandas as pd  # probably not great practice, but means we dont import unless needed
+            if len(zips) > 1:
+                self.result = pd.read_json(json.dumps(_res['CityStateLookupResponse']['ZipCode']),
+                                       dtype=False)  # disable dtype inference to preserve ZIP codes
+            else:
+                # if there's only a single return, the JSON doesnt include an array so we have to load
+                # it into a series and then turn it back into a DataFrame
+                self.result = pd.DataFrame(pd.read_json(json.dumps(
+                    _res['CityStateLookupResponse']['ZipCode']),
+                    typ='series',
+                    dtype=False  # disable dtype inference to preserve ZIP codes
+                )).T
+
+        else:
+            self.result = _res
 
 
 class TrackingInfo(object):
