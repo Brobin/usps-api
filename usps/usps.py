@@ -151,7 +151,7 @@ class TimeCalc(object):
         Can be extended to switch between Standard and Priority, but Standard is hard-coded right now
     """
 
-    def __init__(self, origin, destination):
+    def __init__(self, usps, origin, destination):
         # StandardBRequest
         xml = etree.Element('StandardBRequest', {'USERID': usps.api_user_id})
         # xml = etree.Element('PriorityMailRequest', {'USERID': usps.api_user_id})
