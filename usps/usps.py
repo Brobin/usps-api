@@ -53,6 +53,10 @@ class AddressValidate(object):
 
     def __init__(self, usps, address):
         xml = etree.Element('AddressValidateRequest', {'USERID': usps.api_user_id})
+        
+        _revision = etree.SubElement(xml, 'Revision')
+        _revision.text = '1'
+        
         _address = etree.SubElement(xml, 'Address', {'ID': '0'})
         address.add_to_xml(_address, prefix='', validate=True)
 
