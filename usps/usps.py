@@ -69,10 +69,18 @@ class AddressValidate(object):
 
 class TrackingInfo(object):
 
-    def __init__(self, usps, tracking_number):
+    def __init__(self, usps, tracking_number,**kwargs): 
         xml = etree.Element('TrackFieldRequest', {'USERID': usps.api_user_id})
-        child = etree.SubElement(xml, 'TrackID', {'ID': tracking_number})
+        if 'source_id' in kwargs:
+            self.source_id = kwargs['source_id']
+            self.client_ip = kwargs['client_ip'] if 'client_ip' in kwargs else '127.0.0.1'
+            
+            etree.SubElement(xml, "Revision").text = "1"
+            etree.SubElement(xml, "ClientIp").text = self.client_ip
+            etree.SubElement(xml, "SourceId").text = self.source_id
 
+        child = etree.SubElement(xml, 'TrackID', {'ID': tracking_number})
+        
         self.result = usps.send_request('tracking', xml)
 
 
