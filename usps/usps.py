@@ -17,6 +17,7 @@ class USPSApi(object):
         'tracking': 'TrackV2{test}&XML={xml}',
         'label': 'eVS{test}&XML={xml}',
         'validate': 'Verify&XML={xml}',
+        'zipcode': 'ZipCodeLookup&XML={xml}',
     }
 
     def __init__(self,  api_user_id, test=False):
@@ -57,6 +58,15 @@ class AddressValidate(object):
         address.add_to_xml(_address, prefix='', validate=True)
 
         self.result = usps.send_request('validate', xml)
+
+
+class ZipCodeLookup(object):
+
+    def __int__(self, usps, address):
+        xml = etree.Element('ZipCodeLookupRequest', {'USERID': usps.api_user_id})
+        _address = etree.SubElement(xml, 'Address', {'ID': '0'})
+        address.add_to_xml(_address, prefix='', validate=True)
+        self.request = usps.send_request('zipcode', xml)
 
 
 class TrackingInfo(object):

@@ -3,7 +3,7 @@ from lxml import etree
 
 class Address(object):
 
-    def __init__(self, name, address_1, city, state, zipcode,
+    def __init__(self, name = '', address_1 = '', city = '', state='', zipcode='',
                  zipcode_ext='', company='', address_2='', phone=''):
         self.name = name
         self.company = company
