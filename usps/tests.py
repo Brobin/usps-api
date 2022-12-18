@@ -39,7 +39,7 @@ class USPSApiTestCase(TestCase):
             usps.get_url('validate', 'test'),
             'https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&XML=test'
         )
-    
+
     @mock.patch('requests.get')
     def test_send_request_error(self, requests_mock):
         requests_mock.return_value.content = b'<Error><Description>Test Error</Description></Error>'
@@ -70,7 +70,7 @@ class USPSApiTestCase(TestCase):
 
 
 class AddressTestCase(TestCase):
-    
+
     def test_address_xml(self):
         address = Address('Test', '123 Test St.', 'Test', 'NE', '55555')
         root = etree.Element('Test')
@@ -95,3 +95,6 @@ class TrackingInfoTestCase(TestCase):
 class ShippingLabelTestCase(TestCase):
     pass
 
+
+class ZipCodeLookupTestCase(TestCase):
+    pass

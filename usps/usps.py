@@ -43,6 +43,9 @@ class USPSApi(object):
     def validate_address(self, *args, **kwargs):
         return AddressValidate(self, *args, **kwargs)
 
+    def zipcode_lookup(self, *args, **kwargs):
+        return ZipCodeLookup(self, *args, **kwargs)
+
     def track(self, *args, **kwargs):
         return TrackingInfo(self, *args, **kwargs)
 
@@ -62,11 +65,11 @@ class AddressValidate(object):
 
 class ZipCodeLookup(object):
 
-    def __int__(self, usps, address):
+    def __init__(self, usps, address):
         xml = etree.Element('ZipCodeLookupRequest', {'USERID': usps.api_user_id})
         _address = etree.SubElement(xml, 'Address', {'ID': '0'})
         address.add_to_xml(_address, prefix='', validate=True)
-        self.request = usps.send_request('zipcode', xml)
+        self.result = usps.send_request('zipcode', xml)
 
 
 class TrackingInfo(object):
